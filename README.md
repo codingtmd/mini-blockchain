@@ -1,6 +1,4 @@
-![mini-blockchain](https://drive.google.com/uc?export=view&id=1B2ar0Mn8CV6GHCVg76Tw0TZ7a8lGZsPk)
-
-
+<img src="https://drive.google.com/uc?export=view&id=1B2ar0Mn8CV6GHCVg76Tw0TZ7a8lGZsPk" width="40%">
 
 ## Mini-Blockchain
 
@@ -30,8 +28,8 @@ This reference system is written in Go.(Don't ask me why use Go. I just fucking 
 ## Parts of the system
 
 This is how bitcoin mining works. I follow the same flow except checking the 2016th block.
-![workflow](https://drive.google.com/uc?export=view&id=1gzntnj7ZSDGAZCuxTarCNFHbKEI2TgOs)
 
+<img src="https://drive.google.com/uc?export=view&id=1gzntnj7ZSDGAZCuxTarCNFHbKEI2TgOs" width="60%">
 SOME DEFINITIONS:
 **User -** anyone who as an account(hash address) is a user. User holds the coins in their account and is able to send/receive coins to/from other users.
 
