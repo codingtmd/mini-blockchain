@@ -328,6 +328,6 @@ func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, am
 		tx.Outputs[1].Value = fromAmount - amount - fee
 	}
 
-	util.GetBlockchainLogger().Debugf("Constructed transaction %v", tx)
+	//util.GetBlockchainLogger().Debugf("Constructed transaction %v", tx)
 	return &tx, nil
 }

@@ -2,7 +2,6 @@ package core
 
 import (
 	"crypto/rsa"
-	"crypto/sha256"
 	"time"
 
 	"../util"
@@ -30,15 +29,15 @@ func InitializeBlockchainWithDiff(gensisAddress *rsa.PublicKey, diff Difficulty)
  * CreateICOTransaction vests amount of coins to speific users
  * currently I use miner to vest the coin, but need a better thought
  */
-func (chain *Blockchain) PopulateICOTransaction(from *rsa.PrivateKey, to rsa.PublicKey, amount uint64) {
-	tx := CreateTransaction(1, 1)
-	tx.Inputs[0].OutputIndex = 0
-	tx.Inputs[0].PrevtxMap = sha256.Sum256(chain.GetLatestBlock().Transactions[0].GetRawDataToHash())
-	tx.Outputs[0].Address = to
-	tx.Outputs[0].Value = amount
-	tx.SignTransaction([]*rsa.PrivateKey{from})
+func (chain *Blockchain) PopulateICOTransaction(from_address rsa.PublicKey, from_key *rsa.PrivateKey, to rsa.PublicKey, amount uint64) {
+	tx, err := chain.TransferCoin(&from_address, &to, MinerRewardBase/4, 500)
+	if err != nil {
+		util.GetBoosterLogger().Errorf("%v\n", err)
+		return
+	}
+	tx.SignTransaction([]*rsa.PrivateKey{from_key})
 
 	util.GetBoosterLogger().Debugf("%s\n", tx.Print())
-	chain.AcceptBroadcastedTransaction(&tx)
+	chain.AcceptBroadcastedTransaction(tx)
 	util.GetBoosterLogger().Infof("Vest user %v %d coins\n", util.GetShortIdentity(to), amount)
 }

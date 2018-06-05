@@ -79,3 +79,15 @@ func (miner *Miner) GetPrivateKey() *rsa.PrivateKey {
 func (miner *Miner) getLogger() loggo.Logger {
 	return util.GetMinerLogger(miner.GetShortIdentity())
 }
+
+func (miner *Miner) SendTo(receipt *User, amount uint64, fee uint64) {
+	tran, err := miner.chain.TransferCoin(&miner.Address, &receipt.Address, amount, fee)
+	if err != nil {
+		miner.getLogger().Errorf("Failed to create transaction: %v\n", err)
+		return
+	}
+
+	miner.getLogger().Debugf("%s\n", tran.Print())
+	miner.chain.AcceptBroadcastedTransaction(tran)
+	miner.getLogger().Infof("User %v sends %d coins to user %v\n", miner.GetShortIdentity(), amount, receipt.GetShortIdentity())
+}

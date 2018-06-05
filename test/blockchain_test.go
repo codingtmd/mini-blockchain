@@ -236,5 +236,4 @@ func TestBlockchainMulitipleFee(t *testing.T) {
 	if chain.BalanceOf(&user3.PublicKey) != core.MinerRewardBase/4 {
 		t.Errorf("User balance is incorrect: expected %d, actual %d", core.MinerRewardBase/4, chain.BalanceOf(&user3.PublicKey))
 	}
-
 }

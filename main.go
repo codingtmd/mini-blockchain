@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -12,6 +14,8 @@ import (
 var chain core.Blockchain
 var users []*role.User
 var miner *role.Miner
+
+const user_count = 10
 
 func boostNetwork() {
 	// 1. create the initial user of blockchain
@@ -32,40 +36,61 @@ func boostNetwork() {
 
 func boostUsers() {
 	// create 10 users
-	for i := 0; i < 10; i++ {
+	for i := 0; i < user_count; i++ {
 		user := role.CreateUser(chain)
-		chain.PopulateICOTransaction(miner.GetPrivateKey(), user.Address, core.MinerRewardBase/100)
+		//chain.PopulateICOTransaction(miner.Address, miner.GetPrivateKey(), user.Address, core.MinerRewardBase/100)
 		users = append(users, user)
-		//util.GetMainLogger().Infof("User %v created", user.GetShortIdentity())
+		util.GetMainLogger().Infof("User %v created", user.GetShortIdentity())
 	}
 }
 
 func startTrading() {
-
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 
 	var from, to int
 	for i := 0; true; i++ {
-		from = r1.Intn(10)
-		if from < 5 {
-			to = 5 + r1.Intn(5)
+		from = r1.Intn(user_count)
+		if from < user_count/2 {
+			to = user_count/2 + r1.Intn(user_count/2)
 		} else {
-			to = r1.Intn(5)
+			to = r1.Intn(user_count)
 		}
 
-		amount := r1.Intn(100)
+		amount := r1.Intn(core.MinerRewardBase / 1000)
 		fee := r1.Intn(10)
-		users[from].SendTo(users[to], uint64(amount), uint64(fee))
+		if int(chain.BalanceOf(&miner.Address)) > amount {
+			miner.SendTo(users[to], uint64(amount), uint64(fee))
+			time.Sleep(5 * time.Second)
+		}
 
-		time.Sleep(5 * time.Second)
+		amount = r1.Intn(core.MinerRewardBase / 1000)
+		fee = r1.Intn(user_count)
+		if int(chain.BalanceOf(&users[from].Address)) > amount {
+			users[from].SendTo(users[to], uint64(amount), uint64(fee))
+			time.Sleep(5 * time.Second)
+		}
 	}
 }
 
 func initializeOneMinerAndStartMining() {
 	miner = role.CreateMiner(chain)
-
 	miner.StartMining()
+}
+
+func printStatus() {
+	for {
+		var buffer bytes.Buffer
+		buffer.WriteString(fmt.Sprintf("Miner[%s:%d]]\n", miner.GetShortIdentity(), chain.BalanceOf(&miner.Address)))
+
+		for i := 0; i < user_count; i++ {
+			buffer.WriteString(fmt.Sprintf("User[%s:%d]] ", users[i].GetShortIdentity(), chain.BalanceOf(&users[i].Address)))
+		}
+
+		util.GetMainLogger().Infof("%s\n", buffer.String())
+
+		time.Sleep(5 * time.Second)
+	}
 }
 
 /*
@@ -88,10 +113,13 @@ func runSimulator() {
 	boostUsers()
 	util.GetMainLogger().Infof("Finished boosting users \n")
 
+	// 3. print status
+	go printStatus()
+
 	// 4. use miner to vest coins to user. Like user buy coins from exchange
 
 	time.Sleep(50 * time.Second)
-	// 4. initialize a few users for generating random transactions
+	// 5. initialize a few users for generating random transactions
 	util.GetMainLogger().Infof("Start to boost users \n")
 	startTrading()
 
