@@ -37,7 +37,6 @@ func (miner *Miner) StartMining() {
 	miner.getLogger().Infof("Miner %v starts mining\n", miner.GetShortIdentity())
 	for i := 0; true; i++ {
 		block := core.CreateNextEmptyBlock(miner.chain.GetLatestBlock(), uint64(time.Now().UnixNano()/1000000), &miner.Address)
-		miner.getLogger().Infof("current transaction pool %v\n", miner.chain.TransactionPool)
 		for tran, _ := range miner.chain.TransactionPool {
 			block.AddTransaction(tran)
 			miner.getLogger().Debugf("Added transaction %s\n", tran.Print())
@@ -47,18 +46,24 @@ func (miner *Miner) StartMining() {
 		startTime := time.Now()
 
 		for true {
+			//miner.getLogger().Infof("current transaction pool %v\n", miner.chain.PrintTransactionPool())
+
 			block.FinalizeBlockAt(nuance, uint64(time.Now().UnixNano()/1000000))
 			if miner.chain.ReachDifficulty(block) {
+				miner.getLogger().Debugf("Current chain:%s\n", miner.chain.Print())
 				err := miner.chain.AddBlock(block)
 				if err != nil {
 					miner.getLogger().Errorf("Failed to add a valid block: %s\n", err)
-					return
+					continue
 				}
 				miner.getLogger().Infof("Added Block %s\n", block.Print())
 
 				break
+			} else {
+				//miner.getLogger().Debugf("Not meet difficulty and sleep 1s\n")
+				time.Sleep(1000 * time.Millisecond)
 			}
-			time.Sleep(1 * time.Second)
+
 			nuance++
 		}
 
@@ -76,6 +81,10 @@ func (miner *Miner) GetPrivateKey() *rsa.PrivateKey {
 	return miner.key
 }
 
+func (miner *Miner) GetBlockChain() *core.Blockchain {
+	return &miner.chain
+}
+
 func (miner *Miner) getLogger() loggo.Logger {
 	return util.GetMinerLogger(miner.GetShortIdentity())
 }
@@ -86,6 +95,8 @@ func (miner *Miner) SendTo(receipt *User, amount uint64, fee uint64) {
 		miner.getLogger().Errorf("Failed to create transaction: %v\n", err)
 		return
 	}
+
+	tran.SignTransaction([]*rsa.PrivateKey{miner.GetPrivateKey()})
 
 	miner.getLogger().Debugf("%s\n", tran.Print())
 	miner.chain.AcceptBroadcastedTransaction(tran)

@@ -3,17 +3,19 @@ package core
 import (
 	"fmt"
 	"math/big"
+
+	"../config"
 )
 
 type Difficulty interface {
-	ReachDifficulty(hash [HashSize]byte) bool
+	ReachDifficulty(hash [config.HashSize]byte) bool
 	UpdateDifficulty(usedTimeMs uint64) error
 	Print() string
 }
 
 type SimpleDifficulty struct {
 	targetBlockIntervalMs uint64 /* interval in ms */
-	difficulty            [HashSize]byte
+	difficulty            [config.HashSize]byte
 }
 
 /*
@@ -28,13 +30,13 @@ type MADifficulty struct {
 	maSamples             uint32 /* number of samples to ma */
 	workSamples           []*big.Int
 	usedTimeMsSamples     []uint64 /* used time samples */
-	difficulty            [HashSize]byte
+	difficulty            [config.HashSize]byte
 }
 
 func CreateSimpleDifficulty(targetBlockIntervalMs uint64, prob float64) Difficulty {
 	var diff SimpleDifficulty
 	diff.targetBlockIntervalMs = targetBlockIntervalMs
-	var buf [HashSize]byte
+	var buf [config.HashSize]byte
 	for i := range buf {
 		buf[i] = byte(prob * 256)
 		prob = prob*256 - float64(buf[i])
@@ -43,8 +45,8 @@ func CreateSimpleDifficulty(targetBlockIntervalMs uint64, prob float64) Difficul
 	return &diff
 }
 
-func hashIsSmallerOrEqual(hash1 *[HashSize]byte, hash2 *[HashSize]byte) bool {
-	for i := 0; i < HashSize; i++ {
+func hashIsSmallerOrEqual(hash1 *[config.HashSize]byte, hash2 *[config.HashSize]byte) bool {
+	for i := 0; i < config.HashSize; i++ {
 		if hash1[i] < hash2[i] {
 			break
 		} else if hash1[i] > hash2[i] {
@@ -54,7 +56,7 @@ func hashIsSmallerOrEqual(hash1 *[HashSize]byte, hash2 *[HashSize]byte) bool {
 	return true
 }
 
-func (d *SimpleDifficulty) ReachDifficulty(hash [HashSize]byte) bool {
+func (d *SimpleDifficulty) ReachDifficulty(hash [config.HashSize]byte) bool {
 	return hashIsSmallerOrEqual(&hash, &d.difficulty)
 }
 
@@ -71,7 +73,7 @@ func (d *SimpleDifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 		d.difficulty[i] = 0
 	}
 	for i, b := range buf {
-		d.difficulty[HashSize-len(buf)+i] = b
+		d.difficulty[config.HashSize-len(buf)+i] = b
 	}
 	return nil
 }
@@ -86,7 +88,7 @@ func (d *SimpleDifficulty) Print() string {
 func CreateMADifficulty(targetBlockIntervalMs uint64, prob float64, maSamples uint32) Difficulty {
 	var diff MADifficulty
 	diff.targetBlockIntervalMs = targetBlockIntervalMs
-	var buf [HashSize]byte
+	var buf [config.HashSize]byte
 	for i := range buf {
 		buf[i] = byte(prob * 256)
 		prob = prob*256 - float64(buf[i])
@@ -96,12 +98,12 @@ func CreateMADifficulty(targetBlockIntervalMs uint64, prob float64, maSamples ui
 	return &diff
 }
 
-func (d *MADifficulty) ReachDifficulty(hash [HashSize]byte) bool {
+func (d *MADifficulty) ReachDifficulty(hash [config.HashSize]byte) bool {
 	return hashIsSmallerOrEqual(&hash, &d.difficulty)
 }
 
-func diffToWork(diff [HashSize]byte) *big.Int {
-	var unit [HashSize + 1]byte
+func diffToWork(diff [config.HashSize]byte) *big.Int {
+	var unit [config.HashSize + 1]byte
 	unit[0] = 1
 	var uInt, dInt, wInt big.Int
 	uInt.SetBytes(unit[:])
@@ -110,18 +112,18 @@ func diffToWork(diff [HashSize]byte) *big.Int {
 	return &wInt
 }
 
-func workToDiff(work *big.Int) *[HashSize]byte {
-	var unit [HashSize + 1]byte
+func workToDiff(work *big.Int) *[config.HashSize]byte {
+	var unit [config.HashSize + 1]byte
 	unit[0] = 1
 	var uInt, dInt big.Int
 	uInt.SetBytes(unit[:])
 	dInt.Div(&uInt, work)
 
-	var diff [HashSize]byte
+	var diff [config.HashSize]byte
 	buf := dInt.Bytes()
 
 	for i, b := range buf {
-		diff[HashSize-len(buf)+i] = b
+		diff[config.HashSize-len(buf)+i] = b
 	}
 	return &diff
 }

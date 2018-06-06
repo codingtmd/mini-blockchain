@@ -1,16 +1,18 @@
 package core
 
 import (
+	"bytes"
 	"crypto/rsa"
 	"crypto/sha256"
 	"errors"
 	"fmt"
 
+	"../config"
 	"../util"
 )
 
 type UTXO struct {
-	txMap       [HashSize]byte
+	txMap       [config.HashSize]byte
 	outputIndex uint32
 }
 
@@ -21,10 +23,10 @@ type UTXO struct {
  * - a set of Transactions indexed by tx hash
  */
 type Blockchain struct {
-	txMap     map[[HashSize]byte]*Transaction /* map of all Transactions in the chain */
-	utxoMap   map[UTXO]bool                   /* map of all unspent transaction output (key is not used) */
-	blockMap  map[[HashSize]byte]*Block       /* map of all blocks */
-	blockList []*Block                        /* list of all blocks */
+	txMap     map[[config.HashSize]byte]*Transaction /* map of all Transactions in the chain */
+	utxoMap   map[UTXO]bool                          /* map of all unspent transaction output (key is not used) */
+	blockMap  map[[config.HashSize]byte]*Block       /* map of all blocks */
+	blockList []*Block                               /* list of all blocks */
 
 	difficulty Difficulty
 
@@ -40,7 +42,6 @@ func (chain *Blockchain) GetDifficulty() Difficulty {
 func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]bool) (uint64, error) {
 	var totalInput uint64
 	var fromAddresses []*rsa.PublicKey
-	util.GetTempLogger().Infof("Verify input\n")
 
 	for _, input := range tran.Inputs {
 		var utxo UTXO
@@ -61,7 +62,7 @@ func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]
 		 */
 		_, inUtxoMap := chain.utxoMap[utxo]
 		if !inUtxoMap {
-			return 0, errors.New("Cannot find UTXO corresponding to an input in the chain")
+			return 0, fmt.Errorf("Cannot find UTXO %s corresponding to an input in the chain %s", util.Hash(utxo), chain.PrintUTXOMap())
 		}
 
 		/*
@@ -69,7 +70,7 @@ func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]
 		 */
 		tx, intxMap := chain.txMap[utxo.txMap]
 		if !intxMap {
-			return 0, errors.New("Blockchain is corrupted: cannot find tx")
+			return 0, fmt.Errorf("Blockchain is corrupted: cannot find tx %s", tx.Print())
 		}
 		if utxo.outputIndex >= uint32(len(tx.Outputs)) {
 			return 0, errors.New("Blockchain is corrupted: cannot find utxo")
@@ -79,7 +80,6 @@ func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]
 		fromAddresses = append(fromAddresses, &tx.Outputs[utxo.outputIndex].Address)
 	}
 
-	util.GetTempLogger().Infof("Verify signature %v\n", fromAddresses)
 	/*
 	 * Step 4: Verify signatures
 	 */
@@ -88,7 +88,6 @@ func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]
 		return 0, err
 	}
 
-	util.GetTempLogger().Infof("Verify output\n")
 	/*
 	 * Step 5: Make sure total input <= total output (the gap is the transaction fee)
 	 */
@@ -184,8 +183,6 @@ func (chain *Blockchain) AddBlock(block *Block) error {
 		return errors.New("Only one miner is allowed in each block")
 	}
 
-	util.GetTempLogger().Infof("start verification trans")
-
 	var inputMap map[UTXO]bool
 	inputMap = make(map[UTXO]bool)
 	var totalFee uint64
@@ -194,7 +191,6 @@ func (chain *Blockchain) AddBlock(block *Block) error {
 		if i == 0 {
 			continue
 		}
-		util.GetTempLogger().Infof("Verify tran %s\n", tx.Print())
 
 		fee, error := chain.verifyTransaction(&tx, inputMap)
 		if error != nil {
@@ -205,20 +201,18 @@ func (chain *Blockchain) AddBlock(block *Block) error {
 
 	/* 100 coins as base award, should be adjusted based on time */
 	var minerReward uint64
-	minerReward = MinerRewardBase + totalFee
+	minerReward = config.MinerRewardBase + totalFee
 	if block.Transactions[0].Outputs[0].Value > minerReward {
 		return errors.New("Miner's reward exceeds base + fee")
 	}
 
-	if block.timeStampMs <= chain.GetLatestBlock().timeStampMs {
+	if block.timeStampMs < chain.GetLatestBlock().timeStampMs {
 		return errors.New("Timestamp must be monotonic increasing")
 	}
 
 	if !chain.ReachDifficulty(block) {
 		return errors.New("The block doesn't meet difficulty")
 	}
-
-	util.GetTempLogger().Infof("start perform trans")
 
 	/*
 	 * Perform all Transactions
@@ -330,4 +324,66 @@ func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, am
 
 	//util.GetBlockchainLogger().Debugf("Constructed transaction %v", tx)
 	return &tx, nil
+}
+
+func (chain *Blockchain) PrintTransactionPool() string {
+	var buffer bytes.Buffer
+	for tran, _ := range chain.TransactionPool {
+		buffer.WriteString(util.Hash(tran))
+	}
+
+	return fmt.Sprintf("TransactionPool:[%s],", buffer.String())
+}
+
+func (chain *Blockchain) PrintTxMap() string {
+	var buffer bytes.Buffer
+
+	for key, tran := range chain.txMap {
+		buffer.WriteString(fmt.Sprintf("%s:%s,", util.HashBytes(key), util.Hash(tran)))
+	}
+
+	return fmt.Sprintf("txMap:[%s],", buffer.String())
+}
+
+func (chain *Blockchain) printUTXOMap(utxoMap map[UTXO]bool) string {
+	var buffer bytes.Buffer
+	for utxo, _ := range utxoMap {
+		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(utxo)))
+	}
+
+	return fmt.Sprintf("utxoMap:[%s],", buffer.String())
+}
+
+func (chain *Blockchain) PrintAddressMap() string {
+	var buffer bytes.Buffer
+	for address, utxos := range chain.AddressMap {
+		buffer.WriteString(fmt.Sprintf("%s:%s", util.GetShortIdentity(address), chain.printUTXOMap(utxos)))
+	}
+
+	return fmt.Sprintf("AddressMap:[%s],", buffer.String())
+}
+
+func (chain *Blockchain) PrintUTXOMap() string {
+	return chain.printUTXOMap(chain.utxoMap)
+}
+
+func (chain *Blockchain) PrintBlockList() string {
+	var buffer bytes.Buffer
+	for _, block := range chain.blockList {
+		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(block)))
+	}
+
+	return fmt.Sprintf("blockList:[%s],", buffer.String())
+}
+
+func (chain *Blockchain) Print() string {
+	var buffer bytes.Buffer
+	buffer.WriteString(chain.PrintTxMap())
+	buffer.WriteString(chain.PrintUTXOMap())
+	buffer.WriteString(chain.PrintBlockList())
+	buffer.WriteString(fmt.Sprintf("difficulty:[%s],", chain.difficulty.Print()))
+	buffer.WriteString(fmt.Sprintf("TransactionPool:[%s],", chain.PrintTransactionPool()))
+	buffer.WriteString(chain.PrintAddressMap())
+	buffer.WriteString(fmt.Sprintf("lastblock:[%s]", chain.GetLatestBlock().Print()))
+	return buffer.String()
 }

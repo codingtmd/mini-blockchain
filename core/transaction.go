@@ -7,11 +7,12 @@ import (
 	"errors"
 	"fmt"
 
+	"../config"
 	"../util"
 )
 
 type TransactionInput struct {
-	PrevtxMap   [HashSize]byte
+	PrevtxMap   [config.HashSize]byte
 	OutputIndex uint32
 	Signature   []byte
 }
@@ -124,8 +125,8 @@ func (tran *Transaction) VerifyTransaction(inputAddresses []*rsa.PublicKey) erro
 }
 
 func (input TransactionInput) Print() string {
-	return fmt.Sprintf("TransactionInput:%p[PrevtxMap:%x,OutputIndex:%x,Signature:%x],",
-		&input,
+	return fmt.Sprintf("TransactionInput:%s[PrevtxMap:%x,OutputIndex:%x,Signature:%x],",
+		util.Hash(input),
 		md5.Sum([]byte(string(input.PrevtxMap[:]))),
 		input.OutputIndex,
 		md5.Sum(input.Signature),
@@ -133,8 +134,8 @@ func (input TransactionInput) Print() string {
 }
 
 func (output TransactionOutput) Print() string {
-	return fmt.Sprintf("TransactionOutput:%p[Address:%v,Value:%v],",
-		&output,
+	return fmt.Sprintf("TransactionOutput:%s[Address:%v,Value:%v],",
+		util.Hash(output),
 		util.GetShortIdentity(output.Address),
 		output.Value,
 	)
@@ -150,5 +151,5 @@ func (tran Transaction) Print() string {
 		buffer.WriteString(out.Print())
 	}
 
-	return fmt.Sprintf("Transaction:%p[%s],", &tran, buffer.String())
+	return fmt.Sprintf("Transaction:%s[%s],", util.Hash(tran), buffer.String())
 }

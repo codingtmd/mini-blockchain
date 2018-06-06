@@ -2,12 +2,12 @@ package core
 
 import (
 	"bytes"
-	"crypto/md5"
 	"crypto/rsa"
 	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
 
+	"../config"
 	"../util"
 )
 
@@ -16,8 +16,8 @@ type uint256 struct {
 }
 
 type Block struct {
-	hash          [HashSize]byte
-	prevBlockHash [HashSize]byte
+	hash          [config.HashSize]byte
+	prevBlockHash [config.HashSize]byte
 	blockIdx      uint64
 
 	blockValue   uint64 /* Mining Value of the block */
@@ -28,7 +28,7 @@ type Block struct {
 	Transactions []Transaction
 }
 
-func createBlock(prevBlockHash [HashSize]byte, blockIdx uint64, timeStampMs uint64, minerAddress *rsa.PublicKey, transactions []Transaction) *Block {
+func createBlock(prevBlockHash [config.HashSize]byte, blockIdx uint64, timeStampMs uint64, minerAddress *rsa.PublicKey, transactions []Transaction) *Block {
 	var block Block
 	block.prevBlockHash = prevBlockHash
 	block.blockIdx = blockIdx
@@ -42,7 +42,7 @@ func createBlock(prevBlockHash [HashSize]byte, blockIdx uint64, timeStampMs uint
 	copy(block.Transactions[0].Inputs[0].PrevtxMap[:], b)
 
 	/* TODO: 100 coins, should be adjusted based on timeStamp */
-	block.Transactions[0].Outputs[0].Value = MinerRewardBase
+	block.Transactions[0].Outputs[0].Value = config.MinerRewardBase
 	block.Transactions[0].Outputs[0].Address = *minerAddress
 
 	/* Add real transactions */
@@ -52,7 +52,7 @@ func createBlock(prevBlockHash [HashSize]byte, blockIdx uint64, timeStampMs uint
 }
 
 func CreateFirstBlock(timeStampMs uint64, minerAddress *rsa.PublicKey) *Block {
-	var prevBlockHash [HashSize]byte /* doesn't matter for the first block*/
+	var prevBlockHash [config.HashSize]byte /* doesn't matter for the first block*/
 	var trans []Transaction
 	return createBlock(prevBlockHash, 0, timeStampMs, minerAddress, trans)
 }
@@ -106,17 +106,21 @@ func (block *Block) VerifyBlockHash() bool {
 	return block.hash == hash
 }
 
+func (block *Block) GetBlockHash() [config.HashSize]byte {
+	return block.hash
+}
+
 func (block *Block) Print() string {
 	var buffer bytes.Buffer
 
 	for _, tran := range block.Transactions {
-		buffer.WriteString(tran.Print())
+		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(tran)))
 	}
 
-	return fmt.Sprintf("Block:%p[hash:%x,prevBlockHash:%x,blockIdx:%v,blockValue:%v,timeStampMs:%v,minerAddress:%v,nuance:%v,Transactions:[%s],",
-		&block,
-		md5.Sum([]byte(string(block.hash[:]))),
-		md5.Sum([]byte(string(block.prevBlockHash[:]))),
+	return fmt.Sprintf("Block:%s[hash:%x,prevBlockHash:%x,blockIdx:%v,blockValue:%v,timeStampMs:%v,minerAddress:%v,nuance:%v,Transactions:[%s],",
+		util.Hash(block),
+		util.HashBytes(block.hash),
+		util.HashBytes(block.prevBlockHash),
 		block.blockIdx,
 		block.blockValue,
 		block.timeStampMs,

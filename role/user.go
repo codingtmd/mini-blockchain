@@ -73,7 +73,9 @@ func (user *User) SendTo(receipt *User, amount uint64, fee uint64) {
 		return
 	}
 
-	user.getLogger().Debugf("Transaction: %v\n", tran)
+	tran.SignTransaction([]*rsa.PrivateKey{user.GetPrivateKey()})
+
+	user.getLogger().Debugf("%s\n", tran.Print())
 	user.chain.AcceptBroadcastedTransaction(tran)
 	user.getLogger().Infof("User %v sends %d coins to user %v\n", user.GetShortIdentity(), amount, receipt.GetShortIdentity())
 }
@@ -95,5 +97,5 @@ func (user *User) GetPrivateKey() *rsa.PrivateKey {
 }
 
 func (user *User) getLogger() loggo.Logger {
-	return util.GetMinerLogger(user.GetShortIdentity())
+	return util.GetUserLogger(user.GetShortIdentity())
 }
