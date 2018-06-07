@@ -107,6 +107,7 @@ The logging uses loggo. Plz check the configuration and usage here: https://gith
 ## Cool future work / Areas you can contribute / TODOs
 
  - Use msg to communicate infro between miner, user. (Currently just function call)
+ - Same-input tramnsaction merging
  - Add multi-miner support
  - A simple script to initialize a blockchain.
  - Create a config for all hard code parameters.
@@ -117,3 +118,7 @@ The logging uses loggo. Plz check the configuration and usage here: https://gith
  - Add some animations that make it easier to understand.
  - Build a dApp
  - Add ICO simulation like how to vest coins to user
+
+## Contact me
+
+Leave me a message if you want to participate for fun.

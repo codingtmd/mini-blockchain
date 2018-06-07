@@ -28,8 +28,10 @@ type TransactionOutput struct {
  * from all users
  */
 type Transaction struct {
+	ID      string
 	Inputs  []TransactionInput
 	Outputs []TransactionOutput
+	Sender  rsa.PublicKey
 }
 
 func CreateTransaction(ninput int, noutput int) Transaction {
@@ -42,6 +44,8 @@ func CreateTransaction(ninput int, noutput int) Transaction {
 		var output TransactionOutput
 		tran.Outputs = append(tran.Outputs, output)
 	}
+
+	tran.ID = util.GetShortedUniqueId()
 	return tran
 }
 
@@ -151,5 +155,5 @@ func (tran Transaction) Print() string {
 		buffer.WriteString(out.Print())
 	}
 
-	return fmt.Sprintf("Transaction:%s[%s],", util.Hash(tran), buffer.String())
+	return fmt.Sprintf("Transaction:%s[%s],", tran.ID, buffer.String())
 }

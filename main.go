@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/rsa"
 	"fmt"
 	"math/rand"
 	"time"
@@ -58,34 +59,26 @@ func startTrading() {
 		//if block.GetBlockHash() != chain.GetLatestBlock().GetBlockHash() {
 		if util.Hash(*block) != util.Hash(miner.GetBlockChain().GetLatestBlock()) {
 			util.GetMainLogger().Infof("Chain confirmed a new block. Clean the usage\n")
-			for i := 0; i <= user_count; i++ {
-				usage[user_count] = 0
-			}
+
 			block = miner.GetBlockChain().GetLatestBlock()
 		}
 
 		if block != nil {
-			//util.GetMainLogger().Debugf("Verify %s, %s\n", util.Hash(*block), util.Hash(miner.GetBlockChain().GetLatestBlock()))
-			//util.GetMainLogger().Debugf("outdated blockchain %s,\n", new_chain.Print())
 			time.Sleep(500 * time.Millisecond)
 		}
 
 		amount := r1.Intn(config.MinerRewardBase / 1000)
 		fee := r1.Intn(10)
-		if usage[user_count] == 0 && int(miner.GetBlockChain().BalanceOf(&miner.Address)) > amount {
-			//util.GetMainLogger().Debugf("Verify %s, %s\n", util.Hash(block), util.Hash(miner.GetBlockChain().GetLatestBlock()))
+		if couldUserPostTransaction(miner.Address) && int(miner.GetBlockChain().BalanceOf(&miner.Address)) > amount {
 			miner.SendTo(users[to], uint64(amount), uint64(fee))
 			time.Sleep(1 * time.Second)
-			usage[user_count] = 1
 		}
 
 		amount = r1.Intn(config.MinerRewardBase / 1000)
 		fee = r1.Intn(user_count)
-		if usage[from] == 0 && int(miner.GetBlockChain().BalanceOf(&users[from].Address)) > amount {
-			//util.GetMainLogger().Debugf("Verify %s, %s\n", util.Hash(block), util.Hash(miner.GetBlockChain().GetLatestBlock()))
+		if couldUserPostTransaction(users[from].Address) && int(miner.GetBlockChain().BalanceOf(&users[from].Address)) > amount {
 			users[from].SendTo(users[to], uint64(amount), uint64(fee))
 			time.Sleep(1 * time.Second)
-			usage[from] = 1
 		}
 	}
 }
@@ -109,6 +102,16 @@ func printStatus() {
 
 		time.Sleep(1 * time.Second)
 	}
+}
+
+// TODO this implementation doesn't support multiple transactions from same user.
+func couldUserPostTransaction(sender rsa.PublicKey) bool {
+	for _, tran := range miner.GetBlockChain().TransactionPool {
+		if tran.Sender == sender {
+			return false
+		}
+	}
+	return true
 }
 
 /*

@@ -324,13 +324,15 @@ func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, am
 		tx.Outputs[1].Value = fromAmount - amount - fee
 	}
 
+	tx.Sender = *from
+
 	//util.GetBlockchainLogger().Debugf("Constructed transaction %v", tx)
 	return &tx, nil
 }
 
 func (chain *Blockchain) PrintTransactionPool() string {
 	var buffer bytes.Buffer
-	for tran, _ := range chain.TransactionPool {
+	for _, tran := range chain.TransactionPool {
 		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(tran)))
 	}
 
