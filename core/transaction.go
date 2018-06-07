@@ -125,9 +125,9 @@ func (tran *Transaction) VerifyTransaction(inputAddresses []*rsa.PublicKey) erro
 }
 
 func (input TransactionInput) Print() string {
-	return fmt.Sprintf("TransactionInput:%s[PrevtxMap:%x,OutputIndex:%x,Signature:%x],",
+	return fmt.Sprintf("TransactionInput:%s[PrevtxMap:%s,OutputIndex:%x,Signature:%x],",
 		util.Hash(input),
-		md5.Sum([]byte(string(input.PrevtxMap[:]))),
+		util.HashBytes(input.PrevtxMap),
 		input.OutputIndex,
 		md5.Sum(input.Signature),
 	)

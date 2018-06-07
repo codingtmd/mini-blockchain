@@ -37,7 +37,7 @@ func (miner *Miner) StartMining() {
 	miner.getLogger().Infof("Miner %v starts mining\n", miner.GetShortIdentity())
 	for i := 0; true; i++ {
 		block := core.CreateNextEmptyBlock(miner.chain.GetLatestBlock(), uint64(time.Now().UnixNano()/1000000), &miner.Address)
-		for tran, _ := range miner.chain.TransactionPool {
+		for _, tran := range miner.chain.TransactionPool {
 			block.AddTransaction(tran)
 			miner.getLogger().Debugf("Added transaction %s\n", tran.Print())
 		}
@@ -51,12 +51,13 @@ func (miner *Miner) StartMining() {
 			block.FinalizeBlockAt(nuance, uint64(time.Now().UnixNano()/1000000))
 			if miner.chain.ReachDifficulty(block) {
 				miner.getLogger().Debugf("Current chain:%s\n", miner.chain.Print())
+				miner.getLogger().Debugf("Start to confirm block: %s\n", block.Print())
 				err := miner.chain.AddBlock(block)
 				if err != nil {
 					miner.getLogger().Errorf("Failed to add a valid block: %s\n", err)
 					continue
 				}
-				miner.getLogger().Infof("Added Block %s\n", block.Print())
+				miner.getLogger().Infof("Confimed Block %s\n", util.Hash(block))
 
 				break
 			} else {

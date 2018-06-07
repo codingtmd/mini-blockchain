@@ -48,6 +48,7 @@ func createBlock(prevBlockHash [config.HashSize]byte, blockIdx uint64, timeStamp
 	/* Add real transactions */
 	block.AddTransactions(transactions)
 
+	util.GetBlockLogger().Infof("Added reward transaction: %s\n", block.Transactions[0].Print())
 	return &block
 }
 
@@ -117,7 +118,7 @@ func (block *Block) Print() string {
 		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(tran)))
 	}
 
-	return fmt.Sprintf("Block:%s[hash:%x,prevBlockHash:%x,blockIdx:%v,blockValue:%v,timeStampMs:%v,minerAddress:%v,nuance:%v,Transactions:[%s],",
+	return fmt.Sprintf("Block:%s[hash:%s,prevBlockHash:%s,blockIdx:%v,blockValue:%v,timeStampMs:%v,minerAddress:%v,nuance:%v,Transactions:[%s],",
 		util.Hash(block),
 		util.HashBytes(block.hash),
 		util.HashBytes(block.prevBlockHash),

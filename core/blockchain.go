@@ -32,7 +32,7 @@ type Blockchain struct {
 
 	/* fields to support wallet */
 	AddressMap      map[rsa.PublicKey]map[UTXO]bool /* map of all Addresses to their utxo list */
-	TransactionPool map[*Transaction]bool           /* all transaction broadcastd by user */
+	TransactionPool map[string]*Transaction         /* all transaction broadcastd by user */
 }
 
 func (chain *Blockchain) GetDifficulty() Difficulty {
@@ -62,7 +62,7 @@ func (chain *Blockchain) verifyTransaction(tran *Transaction, inputMap map[UTXO]
 		 */
 		_, inUtxoMap := chain.utxoMap[utxo]
 		if !inUtxoMap {
-			return 0, fmt.Errorf("Cannot find UTXO %s corresponding to an input in the chain %s", util.Hash(utxo), chain.PrintUTXOMap())
+			return 0, fmt.Errorf("Cannot find UTXO %s corresponding to an input in the chain %s, %s", util.Hash(utxo), chain.PrintUTXOMap(), tran.Print())
 		}
 
 		/*
@@ -146,7 +146,8 @@ func (chain *Blockchain) performTransaction(tran *Transaction) {
 	}
 
 	// remove the transaction from the poposal pool
-	delete(chain.TransactionPool, tran)
+	util.GetBlockchainLogger().Debugf("delete %s from transaction pool\n", util.Hash(tran))
+	delete(chain.TransactionPool, util.Hash(tran))
 }
 
 func (chain *Blockchain) performMinerTransactionAndAddBlock(block *Block) {
@@ -192,6 +193,7 @@ func (chain *Blockchain) AddBlock(block *Block) error {
 			continue
 		}
 
+		util.GetBlockchainLogger().Debugf("Start to confirm transaction: %s\n", tx.Print())
 		fee, error := chain.verifyTransaction(&tx, inputMap)
 		if error != nil {
 			return error
@@ -249,7 +251,7 @@ func (chain *Blockchain) RegisterUser(user rsa.PublicKey, utxoMap map[UTXO]bool)
 }
 
 func (chain *Blockchain) AcceptBroadcastedTransaction(tran *Transaction) {
-	chain.TransactionPool[tran] = true
+	chain.TransactionPool[util.Hash(tran)] = tran
 }
 
 /***********************************
@@ -329,7 +331,7 @@ func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, am
 func (chain *Blockchain) PrintTransactionPool() string {
 	var buffer bytes.Buffer
 	for tran, _ := range chain.TransactionPool {
-		buffer.WriteString(util.Hash(tran))
+		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(tran)))
 	}
 
 	return fmt.Sprintf("TransactionPool:[%s],", buffer.String())

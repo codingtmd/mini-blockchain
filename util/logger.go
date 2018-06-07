@@ -27,6 +27,10 @@ func GetBlockchainLogger() loggo.Logger {
 	return getLogger("Blockchain")
 }
 
+func GetBlockLogger() loggo.Logger {
+	return getLogger("Block")
+}
+
 func GetUserLogger(id string) loggo.Logger {
 	return getLogger("User-" + id)
 }

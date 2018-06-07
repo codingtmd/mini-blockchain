@@ -164,7 +164,7 @@ func (d *MADifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 }
 
 func (d *MADifficulty) Print() string {
-	return fmt.Sprintf("MADifficulty:[targetBlockIntervalMs:%v,maSamples:%d,workSamples:%v,usedTimeMsSamples:%v,difficulty:%v] \n",
+	return fmt.Sprintf("MADifficulty:[targetBlockIntervalMs:%v,maSamples:%d,workSamples:%v,usedTimeMsSamples:%v,difficulty:%v]",
 		d.targetBlockIntervalMs,
 		d.maSamples,
 		d.workSamples,

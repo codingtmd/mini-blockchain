@@ -48,7 +48,7 @@ func startTrading() {
 
 	var from, to int
 	for i := 0; true; i++ {
-		from = r1.Intn(user_count / 2)
+		from = r1.Intn(user_count)
 		if from < user_count/2 {
 			to = user_count/2 + r1.Intn(user_count/2)
 		} else {
@@ -75,7 +75,7 @@ func startTrading() {
 		if usage[user_count] == 0 && int(miner.GetBlockChain().BalanceOf(&miner.Address)) > amount {
 			//util.GetMainLogger().Debugf("Verify %s, %s\n", util.Hash(block), util.Hash(miner.GetBlockChain().GetLatestBlock()))
 			miner.SendTo(users[to], uint64(amount), uint64(fee))
-			time.Sleep(5 * time.Second)
+			time.Sleep(1 * time.Second)
 			usage[user_count] = 1
 		}
 
@@ -84,7 +84,7 @@ func startTrading() {
 		if usage[from] == 0 && int(miner.GetBlockChain().BalanceOf(&users[from].Address)) > amount {
 			//util.GetMainLogger().Debugf("Verify %s, %s\n", util.Hash(block), util.Hash(miner.GetBlockChain().GetLatestBlock()))
 			users[from].SendTo(users[to], uint64(amount), uint64(fee))
-			time.Sleep(5 * time.Second)
+			time.Sleep(1 * time.Second)
 			usage[from] = 1
 		}
 	}
@@ -105,7 +105,7 @@ func printStatus() {
 		}
 
 		util.GetMainLogger().Debugf("Account Status: %s\n", buffer.String())
-		util.GetMainLogger().Debugf("Chain Status: %s\n", miner.GetBlockChain().Print())
+		//util.GetMainLogger().Debugf("Chain Status: %s\n", miner.GetBlockChain().Print())
 
 		time.Sleep(1 * time.Second)
 	}
