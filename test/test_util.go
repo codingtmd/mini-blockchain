@@ -5,13 +5,14 @@ import (
 	"crypto/rsa"
 	"testing"
 
+	"../config"
 	"../core"
 )
 
 type NoDifficulty struct {
 }
 
-func (d NoDifficulty) ReachDifficulty(hash [core.HashSize]byte) bool {
+func (d NoDifficulty) ReachDifficulty(hash [config.HashSize]byte) bool {
 	return true
 }
 
