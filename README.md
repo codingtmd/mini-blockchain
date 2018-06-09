@@ -12,7 +12,7 @@ Since it is primarily designed as a learning tool for people to learn the blockc
 
 ## What is this not?
 
-Mini-Blockchain is **not** meant for real usage as it is a simplified veraion and has many hard coded parameters. It's meant for 
+Mini-Blockchain is **not** meant for real usage as it is a simplified version and has many hard coded parameters. It's just meant for learning.
 
 It also may just simply stop working at any time since there are some depandences.
 
@@ -41,7 +41,7 @@ SOME DEFINITIONS:
 
 **Difficulty -**  a measure of how difficult it is to find a hash below a given target. Valid blocks must have a hash below this target. Mining pools also have a pool-specific share difficulty setting a lower limit for shares. In bitcoin, the network difficulty changes every 2016 blocks. For my implementation, the difficulty changes every block.
 
-**Nonce -** a 32-bit (4-byte) field to ramdom the hash generation. Any change to the block data (such as the nonce) will make the block hash completely different. The resulting hash has to be a value less than the current difficulty and so will have to have a certain number of leading zero bits to be less than that. As this iterative calculation requires time and resources, the presentation of the block with the correct nonce value constitutes proof of work.
+**Nonce -** a 32-bit (4-byte) field to random the hash generation. Any change to the block data (such as the nonce) will make the block hash completely different. The resulting hash has to be a value less than the current difficulty and so will have to have a certain number of leading zero bits to be less than that. As this iterative calculation requires time and resources, the presentation of the block with the correct nonce value constitutes proof of work.
 
 **Reward -** when a block is discovered, the miner may award themselves a certain number of bitcoins, which is agreed-upon by everyone in the network. Normally the rewarding transaction is the first transaction in a block proposed by the miner.
 
@@ -106,7 +106,7 @@ The logging uses loggo. Plz check the configuration and usage here: https://gith
 
 ## Cool future work / Areas you can contribute / TODOs
 
- - Use msg to communicate infro between miner, user. (Currently just function call)
+ - Use msg to communicate infro between miners, users. (Currently just function call)
  - Same-input tramnsaction merging
  - Add multi-miner support
  - A simple script to initialize a blockchain.
