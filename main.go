@@ -17,7 +17,7 @@ var chain core.Blockchain
 var users []*role.User
 var miner *role.Miner
 
-const user_count = 4
+const userCount = 4
 
 func boostNetwork() {
 	// 1. create the initial user of blockchain
@@ -30,7 +30,7 @@ func boostNetwork() {
 
 func boostUsers() {
 	// create 10 users
-	for i := 0; i < user_count; i++ {
+	for i := 0; i < userCount; i++ {
 		user := role.CreateUser(chain)
 		users = append(users, user)
 		util.GetMainLogger().Infof("User %v created\n", user.GetShortIdentity())
@@ -42,18 +42,18 @@ func startTrading() {
 	r1 := rand.New(s1)
 
 	block := miner.GetBlockChain().GetLatestBlock()
-	var usage [user_count + 1]int // miner is the last one
-	for i := 0; i <= user_count; i++ {
-		usage[user_count] = 0
+	var usage [userCount + 1]int // miner is the last one
+	for i := 0; i <= userCount; i++ {
+		usage[userCount] = 0
 	}
 
 	var from, to int
 	for i := 0; true; i++ {
-		from = r1.Intn(user_count)
-		if from < user_count/2 {
-			to = user_count/2 + r1.Intn(user_count/2)
+		from = r1.Intn(userCount)
+		if from < userCount/2 {
+			to = userCount/2 + r1.Intn(userCount/2)
 		} else {
-			to = r1.Intn(user_count / 2)
+			to = r1.Intn(userCount / 2)
 		}
 
 		//if block.GetBlockHash() != chain.GetLatestBlock().GetBlockHash() {
@@ -75,7 +75,7 @@ func startTrading() {
 		}
 
 		amount = r1.Intn(config.MinerRewardBase / 1000)
-		fee = r1.Intn(user_count)
+		fee = r1.Intn(userCount)
 		if couldUserPostTransaction(users[from].Address) && int(miner.GetBlockChain().BalanceOf(&users[from].Address)) > amount {
 			users[from].SendTo(users[to], uint64(amount), uint64(fee))
 			time.Sleep(1 * time.Second)
@@ -93,7 +93,7 @@ func printStatus() {
 		var buffer bytes.Buffer
 		buffer.WriteString(fmt.Sprintf("Miner[%s:%d]] ", miner.GetShortIdentity(), miner.GetBlockChain().BalanceOf(&miner.Address)))
 
-		for i := 0; i < user_count; i++ {
+		for i := 0; i < userCount; i++ {
 			buffer.WriteString(fmt.Sprintf("User[%s:%d]] ", users[i].GetShortIdentity(), miner.GetBlockChain().BalanceOf(&users[i].Address)))
 		}
 
