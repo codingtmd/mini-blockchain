@@ -120,7 +120,7 @@ The logging uses loggo. Plz check the configuration and usage here: https://gith
  - Add ICO simulation like how to vest coins to user
 
  ## Authors
-Lei Zhang, Facebook, https://www.linkedin.com/in/codingtmd
+Lei Zhang, https://www.linkedin.com/in/codingtmd
 
 ## Contact me
 
