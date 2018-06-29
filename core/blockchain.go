@@ -11,17 +11,16 @@ import (
 	"../util"
 )
 
+//UTXO = Unspent Transaction Output
 type UTXO struct {
 	txMap       [config.HashSize]byte
 	outputIndex uint32
 }
 
-/*
- * A block chain contains
- * - a chain of blocks indexed by hash and block index
- * - a set of unspent transaction output
- * - a set of Transactions indexed by tx hash
- */
+//A Blockchain contains
+// - a chain of blocks indexed by hash and block index
+// - a set of unspent transaction output
+// - a set of Transactions indexed by tx hash
 type Blockchain struct {
 	txMap     map[[config.HashSize]byte]*Transaction /* map of all Transactions in the chain */
 	utxoMap   map[UTXO]bool                          /* map of all unspent transaction output (key is not used) */
@@ -35,6 +34,7 @@ type Blockchain struct {
 	TransactionPool map[string]*Transaction         /* all transaction broadcastd by user */
 }
 
+//GetDifficulty Get difficulty
 func (chain *Blockchain) GetDifficulty() Difficulty {
 	return chain.difficulty
 }
@@ -163,10 +163,8 @@ func (chain *Blockchain) performMinerTransactionAndAddBlock(block *Block) {
 	chain.blockMap[blockHash] = block
 }
 
-/*
- * Append the block to the end of the chain.
- * TODO: Support appending the block to a block that is a few blocks ahead of the end
- */
+//AddBlock Append the block to the end of the chain.
+//TODO: Support appending the block to a block that is a few blocks ahead of the end
 func (chain *Blockchain) AddBlock(block *Block) error {
 	if block.prevBlockHash != chain.blockList[len(chain.blockList)-1].hash {
 		return errors.New("The prevous block must be the last block in the chain")
@@ -231,6 +229,7 @@ func (chain *Blockchain) AddBlock(block *Block) error {
 	return nil
 }
 
+//GetNLatestBlock Get specified amount of latest blocks.
 func (chain *Blockchain) GetNLatestBlock(n int) *Block {
 	if n > len(chain.blockList) {
 		return nil
@@ -238,18 +237,22 @@ func (chain *Blockchain) GetNLatestBlock(n int) *Block {
 	return chain.blockList[len(chain.blockList)-n]
 }
 
+//GetLatestBlock Get the latest block
 func (chain *Blockchain) GetLatestBlock() *Block {
 	return chain.GetNLatestBlock(1)
 }
 
+//ReachDifficulty Check whether the chain has reach difficulty
 func (chain *Blockchain) ReachDifficulty(block *Block) bool {
 	return chain.difficulty.ReachDifficulty(block.hash)
 }
 
+//RegisterUser Register user
 func (chain *Blockchain) RegisterUser(user rsa.PublicKey, utxoMap map[UTXO]bool) {
 	chain.AddressMap[user] = utxoMap
 }
 
+//AcceptBroadcastedTransaction Accept transaction which broadchated by others.
 func (chain *Blockchain) AcceptBroadcastedTransaction(tran *Transaction) {
 	chain.TransactionPool[util.Hash(tran)] = tran
 }
@@ -258,9 +261,7 @@ func (chain *Blockchain) AcceptBroadcastedTransaction(tran *Transaction) {
  * Wallet related methods
  **********************************/
 
-/*
- * Balance of an Address
- */
+// BalanceOf Check the balance of an Address
 func (chain *Blockchain) BalanceOf(Address *rsa.PublicKey) uint64 {
 	m, exist := chain.AddressMap[*Address]
 	if !exist {
@@ -276,11 +277,9 @@ func (chain *Blockchain) BalanceOf(Address *rsa.PublicKey) uint64 {
 	return balance
 }
 
-/*
- * Make a transaction to transfer coins from one account to target Address.
- * Return nil if there is insufficient fund or amount is zero
- * Note that the transaction is unsigned
- */
+// TransferCoin Make a transaction to transfer coins from one account to target Address.
+// Return nil if there is insufficient fund or amount is zero
+// Note that the transaction is unsigned
 func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, amount uint64, fee uint64) (*Transaction, error) {
 	if amount == 0 {
 		return nil, fmt.Errorf("amount needs > 0")
@@ -330,6 +329,7 @@ func (chain *Blockchain) TransferCoin(from *rsa.PublicKey, to *rsa.PublicKey, am
 	return &tx, nil
 }
 
+//PrintTransactionPool Print details information of transactions in a chain.
 func (chain *Blockchain) PrintTransactionPool() string {
 	var buffer bytes.Buffer
 	for _, tran := range chain.TransactionPool {
@@ -339,6 +339,7 @@ func (chain *Blockchain) PrintTransactionPool() string {
 	return fmt.Sprintf("TransactionPool:[%s],", buffer.String())
 }
 
+//PrintTxMap Print information of 'TxMap' in a chain.
 func (chain *Blockchain) PrintTxMap() string {
 	var buffer bytes.Buffer
 
@@ -351,13 +352,14 @@ func (chain *Blockchain) PrintTxMap() string {
 
 func (chain *Blockchain) printUTXOMap(utxoMap map[UTXO]bool) string {
 	var buffer bytes.Buffer
-	for utxo, _ := range utxoMap {
+	for utxo := range utxoMap {
 		buffer.WriteString(fmt.Sprintf("%s,", util.Hash(utxo)))
 	}
 
 	return fmt.Sprintf("utxoMap:[%s],", buffer.String())
 }
 
+//PrintAddressMap Print information of 'AddressMap' in a chain.
 func (chain *Blockchain) PrintAddressMap() string {
 	var buffer bytes.Buffer
 	for address, utxos := range chain.AddressMap {
@@ -367,10 +369,12 @@ func (chain *Blockchain) PrintAddressMap() string {
 	return fmt.Sprintf("AddressMap:[%s],", buffer.String())
 }
 
+//PrintUTXOMap Print information of 'utxoMap' in a chain.
 func (chain *Blockchain) PrintUTXOMap() string {
 	return chain.printUTXOMap(chain.utxoMap)
 }
 
+//PrintBlockList Print information of 'blockList' in a chain.
 func (chain *Blockchain) PrintBlockList() string {
 	var buffer bytes.Buffer
 	for _, block := range chain.blockList {
@@ -380,6 +384,7 @@ func (chain *Blockchain) PrintBlockList() string {
 	return fmt.Sprintf("blockList:[%s],", buffer.String())
 }
 
+//Print details of a chain.
 func (chain *Blockchain) Print() string {
 	var buffer bytes.Buffer
 	buffer.WriteString(chain.PrintTxMap())

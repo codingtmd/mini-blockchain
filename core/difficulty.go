@@ -7,24 +7,24 @@ import (
 	"../config"
 )
 
+//Difficulty used for encapsulate check/update/print functions relevant the calcuate difficulty.
 type Difficulty interface {
 	ReachDifficulty(hash [config.HashSize]byte) bool
 	UpdateDifficulty(usedTimeMs uint64) error
 	Print() string
 }
 
+//SimpleDifficulty A simple wrapper of difficulty.
 type SimpleDifficulty struct {
 	targetBlockIntervalMs uint64 /* interval in ms */
 	difficulty            [config.HashSize]byte
 }
 
-/*
- * Moving average difficulty algorithm
- * Note that BCH's new difficulty algorithm is similar to the algorithm with
- * - target interval is 10mins
- * - maSamples is 144
- * That is moving average over the difficulty in a day
- */
+// MADifficulty Moving average difficulty algorithm
+// Note that BCH's new difficulty algorithm is similar to the algorithm with
+// - target interval is 10mins
+// - maSamples is 144
+// That is moving average over the difficulty in a day
 type MADifficulty struct {
 	targetBlockIntervalMs uint64
 	maSamples             uint32 /* number of samples to ma */
@@ -33,6 +33,7 @@ type MADifficulty struct {
 	difficulty            [config.HashSize]byte
 }
 
+//CreateSimpleDifficulty Create a 'SimpleDifficulty'
 func CreateSimpleDifficulty(targetBlockIntervalMs uint64, prob float64) Difficulty {
 	var diff SimpleDifficulty
 	diff.targetBlockIntervalMs = targetBlockIntervalMs
@@ -56,10 +57,12 @@ func hashIsSmallerOrEqual(hash1 *[config.HashSize]byte, hash2 *[config.HashSize]
 	return true
 }
 
+//ReachDifficulty Check whether the block has reached the difficulty
 func (d *SimpleDifficulty) ReachDifficulty(hash [config.HashSize]byte) bool {
 	return hashIsSmallerOrEqual(&hash, &d.difficulty)
 }
 
+//UpdateDifficulty Update the difficulty
 func (d *SimpleDifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 	var v, target, used, mul, newDiff big.Int
 	v.SetBytes(d.difficulty[:])
@@ -78,6 +81,7 @@ func (d *SimpleDifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 	return nil
 }
 
+//Print details of a SimpleDifficulty
 func (d *SimpleDifficulty) Print() string {
 	return fmt.Sprintf("SimpleDifficulty:[targetBlockIntervalMs:%v,difficulty:%v] \n",
 		d.targetBlockIntervalMs,
@@ -85,6 +89,7 @@ func (d *SimpleDifficulty) Print() string {
 	)
 }
 
+//CreateMADifficulty Create a MADifficulty
 func CreateMADifficulty(targetBlockIntervalMs uint64, prob float64, maSamples uint32) Difficulty {
 	var diff MADifficulty
 	diff.targetBlockIntervalMs = targetBlockIntervalMs
@@ -98,6 +103,7 @@ func CreateMADifficulty(targetBlockIntervalMs uint64, prob float64, maSamples ui
 	return &diff
 }
 
+//ReachDifficulty Check whether the block has reached the difficulty
 func (d *MADifficulty) ReachDifficulty(hash [config.HashSize]byte) bool {
 	return hashIsSmallerOrEqual(&hash, &d.difficulty)
 }
@@ -128,6 +134,7 @@ func workToDiff(work *big.Int) *[config.HashSize]byte {
 	return &diff
 }
 
+//UpdateDifficulty Update the difficulty
 func (d *MADifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 	d.usedTimeMsSamples = append(d.usedTimeMsSamples, usedTimeMs)
 	d.workSamples = append(d.workSamples, diffToWork(d.difficulty))
@@ -163,6 +170,7 @@ func (d *MADifficulty) UpdateDifficulty(usedTimeMs uint64) error {
 	return nil
 }
 
+//Print details of a MADifficulty
 func (d *MADifficulty) Print() string {
 	return fmt.Sprintf("MADifficulty:[targetBlockIntervalMs:%v,maSamples:%d,workSamples:%v,usedTimeMsSamples:%v,difficulty:%v]",
 		d.targetBlockIntervalMs,
