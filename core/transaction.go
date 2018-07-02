@@ -11,22 +11,22 @@ import (
 	"../util"
 )
 
+//TransactionInput is a reference to an output of a previous transaction
 type TransactionInput struct {
 	PrevtxMap   [config.HashSize]byte
 	OutputIndex uint32
 	Signature   []byte
 }
 
+//TransactionOutput contains instructions for sending bitcoins.
 type TransactionOutput struct {
 	Value   uint64
 	Address rsa.PublicKey
 }
 
-/*
- * A transaction contains a list of Inputs and Outputs.
- * To become a valid transation, it must contain the all signatures
- * from all users
- */
+//Transaction contains a list of Inputs and	 Outputs.
+// To become a valid transation, it must contain the all signatures
+// from all users
 type Transaction struct {
 	ID      string
 	Inputs  []TransactionInput
@@ -34,6 +34,7 @@ type Transaction struct {
 	Sender  rsa.PublicKey
 }
 
+//CreateTransaction create a transaction with specified count of inputs and outputs
 func CreateTransaction(ninput int, noutput int) Transaction {
 	var tran Transaction
 	for i := 0; i < ninput; i++ {
@@ -67,9 +68,7 @@ func (tran *Transaction) getRawDataToSign() []byte {
 	return data
 }
 
-/*
- * Get the raw data to hash the whole transaction
- */
+// GetRawDataToHash Get the raw data to hash the whole transaction
 func (tran *Transaction) GetRawDataToHash() []byte {
 	var data []byte
 	for i := 0; i < len(tran.Inputs); i++ {
@@ -85,16 +84,12 @@ func (tran *Transaction) GetRawDataToHash() []byte {
 	return data
 }
 
-/*
- * Get the raw data to hash the whole transaction
- */
+//GetRawDataToHashForTest Get the raw data to hash the whole transaction
 func (tran *Transaction) GetRawDataToHashForTest() []byte {
 	return tran.GetRawDataToHash()
 }
 
-/*
- * Sign a transaction in place (in practice, it should be called by each signer individually)
- */
+//SignTransaction Sign a transaction in place (in practice, it should be called by each signer individually)
 func (tran *Transaction) SignTransaction(signers []*rsa.PrivateKey) error {
 	if len(signers) != len(tran.Inputs) {
 		return errors.New("Number of signers mismatch that of Inputs")
@@ -110,10 +105,8 @@ func (tran *Transaction) SignTransaction(signers []*rsa.PrivateKey) error {
 	return nil
 }
 
-/*
- * Verify whether a transaction has valid signatures.
- * Note that it doesn't verify whether the transaction is valid in the chain.
- */
+//VerifyTransaction Verify whether a transaction has valid signatures.
+//Note that it doesn't verify whether the transaction is valid in the chain.
 func (tran *Transaction) VerifyTransaction(inputAddresses []*rsa.PublicKey) error {
 	if len(inputAddresses) != len(tran.Inputs) {
 		return errors.New("Number of Addresses mismatch that of Inputs")
@@ -128,6 +121,7 @@ func (tran *Transaction) VerifyTransaction(inputAddresses []*rsa.PublicKey) erro
 	return nil
 }
 
+//Print details of transaction input
 func (input TransactionInput) Print() string {
 	return fmt.Sprintf("TransactionInput:%s[PrevtxMap:%s,OutputIndex:%x,Signature:%x],",
 		util.Hash(input),
@@ -137,6 +131,7 @@ func (input TransactionInput) Print() string {
 	)
 }
 
+//Print details of transaction output
 func (output TransactionOutput) Print() string {
 	return fmt.Sprintf("TransactionOutput:%s[Address:%v,Value:%v],",
 		util.Hash(output),
@@ -145,6 +140,7 @@ func (output TransactionOutput) Print() string {
 	)
 }
 
+//Print details of transaction
 func (tran Transaction) Print() string {
 	var buffer bytes.Buffer
 	for _, in := range tran.Inputs {

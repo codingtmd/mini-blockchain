@@ -15,6 +15,7 @@ type uint256 struct {
 	data [4]uint64
 }
 
+//Block conains a group of valid transactions and the cryptographic hash of the prior block in the blockchain
 type Block struct {
 	hash          [config.HashSize]byte
 	prevBlockHash [config.HashSize]byte
@@ -52,17 +53,20 @@ func createBlock(prevBlockHash [config.HashSize]byte, blockIdx uint64, timeStamp
 	return &block
 }
 
+//CreateFirstBlock create first block of a chain.
 func CreateFirstBlock(timeStampMs uint64, minerAddress *rsa.PublicKey) *Block {
 	var prevBlockHash [config.HashSize]byte /* doesn't matter for the first block*/
 	var trans []Transaction
 	return createBlock(prevBlockHash, 0, timeStampMs, minerAddress, trans)
 }
 
+//CreateNextEmptyBlock create next empty block of a chain.
 func CreateNextEmptyBlock(prevBlock *Block, timeStamp uint64, minerAddress *rsa.PublicKey) *Block {
 	var trans []Transaction
 	return createBlock(prevBlock.hash, prevBlock.blockIdx+1, timeStamp, minerAddress, trans)
 }
 
+//CreateNextBlock create next block of a chain.
 func CreateNextBlock(prevBlock *Block, timeStamp uint64, minerAddress *rsa.PublicKey, naunce uint64, transactions []Transaction) *Block {
 	block := createBlock(prevBlock.hash, prevBlock.blockIdx+1, timeStamp, minerAddress, transactions)
 
@@ -72,10 +76,12 @@ func CreateNextBlock(prevBlock *Block, timeStamp uint64, minerAddress *rsa.Publi
 	return block
 }
 
+//AddTransaction add a transaction to current block.
 func (block *Block) AddTransaction(tran *Transaction) {
 	block.Transactions = append(block.Transactions, *tran)
 }
 
+//AddTransactions add a series transactions to current block.
 func (block *Block) AddTransactions(trans []Transaction) {
 	block.Transactions = append(block.Transactions, trans...)
 }
@@ -96,21 +102,25 @@ func (block *Block) getRawDataToHash() []byte {
 	return data
 }
 
+//FinalizeBlockAt Finalize a block with specified timestamp
 func (block *Block) FinalizeBlockAt(naunce uint64, timeStampMs uint64) {
 	block.nuance.data[0] = naunce
 	block.timeStampMs = timeStampMs
 	block.hash = sha256.Sum256(block.getRawDataToHash())
 }
 
+//VerifyBlockHash Verify block hash
 func (block *Block) VerifyBlockHash() bool {
 	hash := sha256.Sum256(block.getRawDataToHash())
 	return block.hash == hash
 }
 
+//GetBlockHash Get hash value of block
 func (block *Block) GetBlockHash() [config.HashSize]byte {
 	return block.hash
 }
 
+//Print details of block
 func (block *Block) Print() string {
 	var buffer bytes.Buffer
 
