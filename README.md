@@ -189,7 +189,7 @@ If you are not familiar with blockchain and its technology, below info will help
 	+ [https://thecontrol.co/tokens-tokens-and-more-tokens-d4b177fbb443](https://thecontrol.co/tokens-tokens-and-more-tokens-d4b177fbb443)
 
 
-###Some white papers
+### Some white papers
 + [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
 + [Ethereum: A Next Generation Smart Contract and Decentralized Application Platform](https://github.com/ethereum/wiki/wiki/White-Paper)
 + [ETHEREUM: A SECURE DECENTRALISED GENERALISED TRANSACTION LEDGER](https://ethereum.github.io/yellowpaper/paper.pdf)
