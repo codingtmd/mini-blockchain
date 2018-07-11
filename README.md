@@ -119,6 +119,88 @@ The logging uses loggo. Plz check the configuration and usage here: https://gith
  - Build a dApp
  - Add ICO simulation like how to vest coins to user
 
+## Reading List
+If you are not familiar with blockchain and its technology, below info will help u to ramp up the knowledge.
+### Articles: 
++ Vision
+	* [https://avc.com/2018/05/is-buying-crypto-assets-investing/](https://avc.com/2018/05/is-buying-crypto-assets-investing/)
+	+ [https://news.earn.com/thoughts-on-tokens-436109aabcbe](https://news.earn.com/thoughts-on-tokens-436109aabcbe)
+	+ [https://thecontrol.co/cryptoeconomics-101-e5c883e9a8ff](https://thecontrol.co/cryptoeconomics-101-e5c883e9a8ff)
+	+ [https://medium.com/@cdixon/why-decentralization-matters-5e3f79f7638e](https://medium.com/@cdixon/why-decentralization-matters-5e3f79f7638e)
+	+ [https://continuations.com/post/148098927445/crypto-tokens-and-the-coming-age-of-protocol](https://continuations.com/post/148098927445/crypto-tokens-and-the-coming-age-of-protocol)
+	+ [https://medium.com/@cdixon/crypto-tokens-a-breakthrough-in-open-network-design-e600975be2ef](https://medium.com/@cdixon/crypto-tokens-a-breakthrough-in-open-network-design-e600975be2ef)
+	+ [https://www.theinformation.com/articles/14-ways-the-cryptocurrency-market-will-change-in-2018](https://www.theinformation.com/articles/14-ways-the-cryptocurrency-market-will-change-in-2018)
+	+ [https://medium.com/@FEhrsam/why-decentralized-exchange-protocols-matter-58fb5e08b320](https://medium.com/@FEhrsam/why-decentralized-exchange-protocols-matter-58fb5e08b320)
+	+ [https://thecontrol.co/some-blockchain-reading-1d98ec6b2f39](https://thecontrol.co/some-blockchain-reading-1d98ec6b2f39)
++ App Token v.s. Protocol Token
+	+ [https://blog.0xproject.com/the-difference-between-app-coins-and-protocol-tokens-7281a428348c](https://blog.0xproject.com/the-difference-between-app-coins-and-protocol-tokens-7281a428348c)
+	+ [https://medium.com/blockchannel/protocol-tokens-good-for-greedy-investors-bad-for-business-9002b40cf4cc](https://medium.com/blockchannel/protocol-tokens-good-for-greedy-investors-bad-for-business-9002b40cf4cc)
+	+ [https://blog.citowise.com/the-basics-coin-vs-token-what-is-the-difference-5cd270591538](https://blog.citowise.com/the-basics-coin-vs-token-what-is-the-difference-5cd270591538)
++ BaaS/Platform
+	+ [https://medium.com/@ACINQ/strike-our-stripe-like-api-for-lightning-is-live-cd1dce76ce2e](https://medium.com/@ACINQ/strike-our-stripe-like-api-for-lightning-is-live-cd1dce76ce2e)
+	+ [https://medium.com/@jbackus/blockchain-platform-plays-2827247a9014](https://medium.com/@jbackus/blockchain-platform-plays-2827247a9014)
+	+ [https://techcrunch.com/2018/05/22/po-et-launches-lab-for-developers-to-build-apps-on-publishing-blockchain/](https://techcrunch.com/2018/05/22/po-et-launches-lab-for-developers-to-build-apps-on-publishing-blockchain/)
++ Business Model
+	+ [https://blog.coinbase.com/app-coins-and-the-dawn-of-the-decentralized-business-model-8b8c951e734](https://blog.coinbase.com/app-coins-and-the-dawn-of-the-decentralized-business-model-8b8c951e734)
++ Consensus mechanism
+	+ [https://www.coindesk.com/blockchains-feared-51-attack-now-becoming-regular/](https://www.coindesk.com/blockchains-feared-51-attack-now-becoming-regular/)
++ dApp
+	+ [https://medium.com/@FEhrsam/the-dapp-developer-stack-the-blockchain-industry-barometer-8d55ec1c7d4](https://medium.com/@FEhrsam/the-dapp-developer-stack-the-blockchain-industry-barometer-8d55ec1c7d4)
++ Decentralized Exchange
+	+ [https://medium.com/@FEhrsam/why-decentralized-exchange-protocols-matter-58fb5e08b320](https://medium.com/@FEhrsam/why-decentralized-exchange-protocols-matter-58fb5e08b320)
+	+ [https://www.reuters.com/article/crypto-currencies-coinbase/coinbase-acquires-cryptocurrency-trading-platform-paradex-idUSL2N1SU1KK](https://www.reuters.com/article/crypto-currencies-coinbase/coinbase-acquires-cryptocurrency-trading-platform-paradex-idUSL2N1SU1KK)
++ Digital
+	+ [https://medium.com/kinfoundation/kin-blockchain-taking-fate-into-our-own-hands-f5bdfa759502](https://medium.com/kinfoundation/kin-blockchain-taking-fate-into-our-own-hands-f5bdfa759502)
++ ENS
+	+ [https://medium.com/the-ethereum-name-service/a-beginners-guide-to-buying-an-ens-domain-3ccac2bdc770](https://medium.com/the-ethereum-name-service/a-beginners-guide-to-buying-an-ens-domain-3ccac2bdc770)
++ ERC-20:
+	+ [https://medium.com/@james_3093/ethereum-erc20-tokens-explained-9f7f304055df](https://medium.com/@james_3093/ethereum-erc20-tokens-explained-9f7f304055df)
+	+ [https://medium.com/0xcert/fungible-vs-non-fungible-tokens-on-the-blockchain-ab4b12e0181a](https://medium.com/0xcert/fungible-vs-non-fungible-tokens-on-the-blockchain-ab4b12e0181a)
+	+ [https://hackernoon.com/an-overview-of-non-fungible-tokens-5f140c32a70a](https://hackernoon.com/an-overview-of-non-fungible-tokens-5f140c32a70a)
++ Fat Protocol
+	+ [https://www.usv.com/blog/fat-protocols](https://www.usv.com/blog/fat-protocols)
++ Game
+	+ [https://www.usv.com/blog/cryptokitties-1](https://www.usv.com/blog/cryptokitties-1)
+	+ [https://techcrunch.com/2018/05/25/gravys-new-mobile-game-show-is-price-is-right-mixed-with-qvc/](https://techcrunch.com/2018/05/25/gravys-new-mobile-game-show-is-price-is-right-mixed-with-qvc/)
+	+ [http://www.businessinsider.com/fortnite-esports-prize-pool-money-epic-games-2018-5](http://www.businessinsider.com/fortnite-esports-prize-pool-money-epic-games-2018-5)
++ Login kit
+	+ [https://medium.com/cleargraphinc/introducing-cleargraph-4713bc215a77](https://medium.com/cleargraphinc/introducing-cleargraph-4713bc215a77)
+	+ [https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf](https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf)
++ Loyalty
+	+ [https://medium.com/@bitrewards/why-blockchain-is-a-smart-solution-for-loyalty-programs-9443af408f71](https://medium.com/@bitrewards/why-blockchain-is-a-smart-solution-for-loyalty-programs-9443af408f71)
+	+ [http://www.oliverwyman.com/our-expertise/insights/2017/mar/Blockchain-Will-Transform-Customer-Loyalty-Programs.html](http://www.oliverwyman.com/our-expertise/insights/2017/mar/Blockchain-Will-Transform-Customer-Loyalty-Programs.html)
+	+ [http://www.kaleidoinsights.com/analysis-should-blockchain-power-your-customer-loyalty-program/](http://www.kaleidoinsights.com/analysis-should-blockchain-power-your-customer-loyalty-program/)
++ Proof of work v.s. Proof of stake
+	+ [https://medium.com/@robertgreenfieldiv/explaining-proof-of-stake-f1eae6feb26f](https://medium.com/@robertgreenfieldiv/explaining-proof-of-stake-f1eae6feb26f)
++ Recorded video
+	+ [https://avc.com/2017/12/video-of-the-week-token-1-0-vs-token-2-0/](https://avc.com/2017/12/video-of-the-week-token-1-0-vs-token-2-0/)
+	+ [https://avc.com/2017/12/video-of-the-week-the-token-summit-conversation/](https://avc.com/2017/12/video-of-the-week-the-token-summit-conversation/)
++ Research report:
+	+ [https://coincenter.org/report](https://coincenter.org/report)
++ Rewarding system
+	+ [https://techcrunch.com/2018/05/22/tango-card-raises-35m-for-its-rewards-as-a-service-gift-card-aggregation-platform/](https://techcrunch.com/2018/05/22/tango-card-raises-35m-for-its-rewards-as-a-service-gift-card-aggregation-platform/)
+	+ [https://medium.com/@bitrewards/why-blockchain-is-a-smart-solution-for-loyalty-programs-9443af408f71](https://medium.com/@bitrewards/why-blockchain-is-a-smart-solution-for-loyalty-programs-9443af408f71)
+	+ [https://techcrunch.com/2018/05/11/hollywood-producer-plans-to-incentivise-content-viewers-with-tokens/](https://techcrunch.com/2018/05/11/hollywood-producer-plans-to-incentivise-content-viewers-with-tokens/)
++ Security Token
+	+ [https://medium.com/@mkogan4/what-the-heck-are-tokenised-securities-7cd1123cbdad](https://medium.com/@mkogan4/what-the-heck-are-tokenised-securities-7cd1123cbdad)
++ Smart Contract
+	+ [https://medium.com/@ninosm/squashing-bugs-and-stopping-heists-the-coming-arms-race-in-smart-contract-infrastructure-9666fb830f65](https://medium.com/@ninosm/squashing-bugs-and-stopping-heists-the-coming-arms-race-in-smart-contract-infrastructure-9666fb830f65)
++ Token
+	+ [https://thecontrol.co/tokens-tokens-and-more-tokens-d4b177fbb443](https://thecontrol.co/tokens-tokens-and-more-tokens-d4b177fbb443)
+
+
+###Some white papers
++ [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
++ [Ethereum: A Next Generation Smart Contract and Decentralized Application Platform](https://github.com/ethereum/wiki/wiki/White-Paper)
++ [ETHEREUM: A SECURE DECENTRALISED GENERALISED TRANSACTION LEDGER](https://ethereum.github.io/yellowpaper/paper.pdf)
++ [BeigePaper: A Ether Tech Spec](https://github.com/chronaeon/beigepaper/blob/master/beigepaper.pdf)
++ [Enabling Blockchain Innovations with Pegged Sidechains](https://blockstream.com/sidechains.pdf)
++ [Augur: A Decentralized, Open-source Platform for Prediction Markets](https://bravenewcoin.com/assets/Whitepapers/Augur-A-Decentralized-Open-Source-Platform-for-Prediction-Markets.pdf)
++ [The Dai Stablecoin System](https://github.com/makerdao/docs/blob/master/Dai.md)
++ [Sia: Simple Decentralized Storage](http://www.sia.tech/sia.pdf)
++ [OmniLedger: A Secure, Scale-Out, Decentralized Ledger via Sharding](https://eprint.iacr.org/2017/406.pdf)
++ [Bitcoin UTXO Lifespan Prediction](http://cs229.stanford.edu/proj2015/225_report.pdf)
+
  ## Authors
 Lei Zhang, https://www.linkedin.com/in/codingtmd
 
