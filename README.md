@@ -31,6 +31,7 @@ This is how bitcoin mining works. I follow the same flow except checking the 201
 
 <img src="https://drive.google.com/uc?export=view&id=1gzntnj7ZSDGAZCuxTarCNFHbKEI2TgOs" width="60%">
 SOME DEFINITIONS:
+
 **User -** anyone who as an account(hash address) is a user. User holds the coins in their account and is able to send/receive coins to/from other users.
 
 **Transaction -** any coin transfer between two users is a transaction. The activities of users will generate transaction, which is the source of transaction pool.
